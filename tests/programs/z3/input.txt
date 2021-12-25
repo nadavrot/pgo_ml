@@ -1,0 +1,20 @@
+(set-logic QF_S)
+
+(declare-fun var5 () String)
+(declare-fun var7 () String)
+(declare-fun var8 () String)
+(declare-fun var11 () String)
+(declare-fun var18 () String)
+(declare-fun var19 () String)
+(declare-fun var6 () Int)
+(assert (>= (str.len var11) (str.indexof var18 var19 var6)))
+(assert (not (str.prefixof var7 var8)))
+(assert (str.prefixof var7 var5))
+(assert (str.prefixof var18 var19))
+(assert (= var8 "I0ab34oNo4vqr7c7sgxHcCJg6ULFy4PWU2muO5cib00Oqw3EJbjemiSPlv4PgguXrHYTwDyuBGjDoKxZ5NSHIwaXiM1ENFcNkS7vpe6GDv2zIBxSpJUM7qJn7vQlOr0U4fY6ofrSqvFVA3brw8P0web452cN7ebhZ42dcZo1naXqiC9kahUSJVNsMzzlMoHv1wiRsI0ab34oNo4vqr7c7sgxHcCJg6ULFy4PWU2muO5cib00Oqw3EJbjemiSPlv4PgguXrHYTwDyuBGjDoKxZ5NSHIwaXiM1ENFcNkS7vpe6GDv2z1wiRs"))
+(assert (= var5 "rZF9VPWNxMGjyniBFQViy8TQthWtFwMx1CVDBKGvWDZh1ZFVjuqTdVkeJ9nG0ma03m7sIYjXCCUsYpUo3RYj1TUSIaztyfq7uFm5Ci1wyaT5Bq05gVdWvFVA3brw8P0web452cN7ebhZ42dcZo1naXqiC9kahUSJVNsMzzlMoHv1wiRsrZF9VPWNxMGjyniBFQViy8TQthWtFwMx1CVDBKGvWDZh1ZFVjuqTdVkeJ9nG0ma03m7sIYjXCCUsYpUo3RYj1TUSIaztyfq7uFm5Ci1wyaT5Bq05gVdWCPKsMnkvS6xbDLjc3xZN8VvHPkeu7fGKbMilOx0V5PvLpLZLc67FLye23DIxoVz8bvtU83Gpd5Hud3cSaG4puifJF4WoSMe5rJBEJuitolheUXcGBMwMW19V72vVy9LAjcM71D1RvFkbl2ry5iIyVhaLY7030JI1jM8nORGC0Qr"))
+
+(check-sat)
+(get-model)
+
+

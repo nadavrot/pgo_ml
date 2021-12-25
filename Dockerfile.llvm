@@ -1,0 +1,59 @@
+FROM ubuntu:20.04
+
+ARG DEBIAN_FRONTEND=noninteractive
+
+# Installing dependencies
+RUN apt-get update && apt-get install -y \
+    git \
+    vim \
+    cmake \
+    libicu-dev \
+    wget \
+    screen \
+    autoconf \
+    ninja-build \
+    build-essential \
+    libreadline-gplv2-dev libncursesw5-dev libssl-dev libsqlite3-dev tk-dev libgdbm-dev libc6-dev libbz2-dev\
+    python3 python3-pip\
+    libjpeg-dev libpng-dev libtiff-dev\
+    && rm -rf /var/lib/apt/lists/*
+
+RUN pip3 install lit pandas scipy virtualenv
+
+RUN git clone --depth=1 https://github.com/llvm/llvm-test-suite.git ~/llvm-test-suite
+
+WORKDIR /home/synprof
+
+# Building LLVM+Clang (release/13.x) from source
+ENV LLVM_DIR /opt/llvm
+RUN git clone --branch release/13.x --depth 1 https://github.com/llvm/llvm-project
+
+RUN mkdir -p $LLVM_DIR \
+    && mkdir -p llvm-project/build \
+    && cd llvm-project/build \
+    && cmake -G Ninja \
+        -DLLVM_ENABLE_PROJECTS="clang;compiler-rt;" \
+        -DLLVM_TARGETS_TO_BUILD=X86 \
+        -DCMAKE_BUILD_TYPE=Release \
+        -DCMAKE_INSTALL_PREFIX=$LLVM_DIR \
+        -DLLVM_INSTALL_TOOLCHAIN_ONLY=ON \
+        -DLLVM_INSTALL_UTILS=ON \
+        ../llvm \
+    && cmake --build . --target install
+
+# Copy and prepare the test programs.
+COPY tests/ /home/synprof/tests
+
+# Copy and compile the patches.
+COPY patches/ /home/synprof/patches
+
+RUN cd llvm-project \
+    && patch -p1 < /home/synprof/patches/llvm.patch \
+    && cp /home/synprof/patches/*.cpp llvm/lib/Transforms/Instrumentation/ \
+    && cp /home/synprof/patches/*h    llvm/include/llvm/Transforms/Instrumentation/
+
+RUN cd llvm-project/build \
+    && cmake --build . --target install
+
+WORKDIR /home/synprof
+

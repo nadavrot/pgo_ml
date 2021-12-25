@@ -1,0 +1,46 @@
+diff --git a/llvm/lib/Passes/PassBuilder.cpp b/llvm/lib/Passes/PassBuilder.cpp
+index 0bc955dbbfea..a5233bee5736 100644
+--- a/llvm/lib/Passes/PassBuilder.cpp
++++ b/llvm/lib/Passes/PassBuilder.cpp
+@@ -132,6 +132,7 @@
+ #include "llvm/Transforms/Instrumentation/MemProfiler.h"
+ #include "llvm/Transforms/Instrumentation/MemorySanitizer.h"
+ #include "llvm/Transforms/Instrumentation/PGOInstrumentation.h"
++#include "llvm/Transforms/Instrumentation/PGOStat.h"
+ #include "llvm/Transforms/Instrumentation/PoisonChecking.h"
+ #include "llvm/Transforms/Instrumentation/SanitizerCoverage.h"
+ #include "llvm/Transforms/Instrumentation/ThreadSanitizer.h"
+@@ -678,6 +679,8 @@ PassBuilder::buildFunctionSimplificationPipeline(OptimizationLevel Level,
+ 
+   FunctionPassManager FPM;
+ 
++  FPM.addPass(PGOStatPass());
++
+   // Form SSA out of local memory accesses after breaking apart aggregates into
+   // scalars.
+   FPM.addPass(SROA());
+diff --git a/llvm/lib/Passes/PassRegistry.def b/llvm/lib/Passes/PassRegistry.def
+index 7525d59f94a5..46c1312ae870 100644
+--- a/llvm/lib/Passes/PassRegistry.def
++++ b/llvm/lib/Passes/PassRegistry.def
+@@ -304,6 +304,7 @@ FUNCTION_PASS("separate-const-offset-from-gep", SeparateConstOffsetFromGEPPass()
+ FUNCTION_PASS("sccp", SCCPPass())
+ FUNCTION_PASS("sink", SinkingPass())
+ FUNCTION_PASS("slp-vectorizer", SLPVectorizerPass())
++FUNCTION_PASS("pgo-stat", PGOStatPass())
+ FUNCTION_PASS("slsr", StraightLineStrengthReducePass())
+ FUNCTION_PASS("speculative-execution", SpeculativeExecutionPass())
+ FUNCTION_PASS("sroa", SROA())
+diff --git a/llvm/lib/Transforms/Instrumentation/CMakeLists.txt b/llvm/lib/Transforms/Instrumentation/CMakeLists.txt
+index 3b29c3df6429..174fe4c6f19f 100644
+--- a/llvm/lib/Transforms/Instrumentation/CMakeLists.txt
++++ b/llvm/lib/Transforms/Instrumentation/CMakeLists.txt
+@@ -18,7 +18,7 @@ add_llvm_component_library(LLVMInstrumentation
+   ValueProfileCollector.cpp
+   ThreadSanitizer.cpp
+   HWAddressSanitizer.cpp
+-
++  PGOStat.cpp
+   ADDITIONAL_HEADER_DIRS
+   ${LLVM_MAIN_INCLUDE_DIR}/llvm/Transforms
+ 
