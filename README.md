@@ -1,8 +1,7 @@
 # Profile Guided Optimization without Profiles: A Machine Learning Approach.
 
-This repository contains the source code for the paper "Profile Guided
-Optimization without Profiles: A Machine Learning Approach" by Nadav Rotem and Chris Cummins.
-Paper link XXXX.
+This repository contains the source code for the paper "Profile Guided Optimization without Profiles: A Machine Learning Approach" by Nadav Rotem and Chris Cummins.
+Link: [paper](https://arxiv.org/abs/2112.14679)
 
 ## Getting Started
 
